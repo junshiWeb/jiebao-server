@@ -14,40 +14,53 @@ function isLoginMid(req, res, next) {
 }
 router.use("*", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");          //允许所有跨域请求
-  res.header("Access-Control-Allow-Headers", "*");          //允许所有跨域请求
-  next();
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By", ' 3.2.1')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  if (req.session.username) {
+    // res.send('首页')
+    // next('/manage');
+    next()
+  } else {
+    // res.send('登陆页面')
+    // next('/login');
+    next()
+  }
 })
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.send('首页')
 });
-router.get('/user', async (req, res, next) => {
-  if (req.session.username) {
-    res.send('已登录，显示首页信息')
-  } else {
-    res.send('未登录，请先登录')
-  }
-});
-// 登陆请求
-router.post('/user', async (req, res, next) => {
-  let sqlStr = 'select username,password from user where username= ? and password = ?'
-  let username = req.body.user ? req.body.user.trim() : ''
-  let password = req.body.pass
-  req.session.username = req.body.user
-  console.log(req.session);
-  let resUser = await QuerySql(sqlStr, [username, jiami(password)])
-  if (resUser.length === 1) {
-    res.send('登陆成功')
-  } else {
-    res.send('账号或密码错误')
-  }
-});
 
-router.get('/userout', async (req, res, next) => {
-  req.session.username = ''
-  console.log(req.session);
-  res.send('退出成功')
-})
+// router.get('/user', async (req, res, next) => {
+//   if (req.session.username) {
+//     res.send('已登录，显示首页信息')
+//   } else {
+//     res.send('未登录，请先登录')
+//   }
+// });
+// // 登陆请求
+// router.post('/user', async (req, res, next) => {
+//   let sqlStr = 'select username,password from user where username= ? and password = ?'
+//   let username = req.body.user ? req.body.user.trim() : ''
+//   let password = req.body.pass
+//   req.session.username = req.body.user
+//   console.log(req.session);
+//   let resUser = await QuerySql(sqlStr, [username, jiami(password)])
+//   if (resUser.length === 1) {
+//     res.send('登陆成功')
+//   } else {
+//     res.send('账号或密码错误')
+//   }
+// });
+
+// router.get('/userout', async (req, res, next) => {
+//   req.session.username = ''
+//   console.log(req.session);
+//   res.send('退出成功')
+// })
 // 首页权用户信息，权限请求，以及用户单据信息请求
 router.post('/manage', async (req, res, next) => {
   // 1.用户信息

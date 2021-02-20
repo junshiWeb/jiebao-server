@@ -7,6 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
+var manageRouter = require('./routes/manage');
+var tasksRouter = require('./routes/tasks');
 
 var app = express();
 var session = require("express-session");
@@ -15,7 +17,7 @@ app.use(session({
   secret: "捷报",
   resave: true,
   saveUninitialized: true,
-  cookie: ('name', 'value', { maxAge: 30 * 1000, secure: false })
+  cookie: ('name', 'value', { maxAge: 30 * 60 * 1000, secure: false })
 }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,6 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter)
+app.use('/manage', manageRouter)
+app.use('/tasks', tasksRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
